@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assiste | Let's Grow India Football</title>
+  <meta name="description" content="Assiste is India's grassroots football platform. Organisers run tournaments, managers create teams, and players track career stats.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- NAVIGATION BAR -->
+  <header class="navbar">
+    <div class="nav-container">
+      <!-- Brand Logo -->
+      <a href="#" class="brand-logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">
+        <div class="brand-icon">
+          <!-- Soccer player shooting ball SVG -->
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="19" stroke="#10b981" stroke-width="2" stroke-dasharray="2 2" opacity="0.4"/>
+            <!-- Player Silhouette -->
+            <path d="M22 10C23.1 10 24 9.1 24 8C24 6.9 23.1 6 22 6C20.9 6 20 6.9 20 8C20 9.1 20.9 10 22 10Z" fill="#10b981"/>
+            <path d="M25.5 12.8C24.4 12.2 23 11.9 21.6 12.2C19.8 12.6 18.2 13.9 17.5 15.6L15.3 21C15 21.7 15.4 22.5 16.2 22.7C16.9 22.9 17.6 22.5 17.8 21.8L19.2 18.2L20.8 21.5L18.4 27.2C18.1 27.9 18.5 28.7 19.3 28.9C19.4 28.9 19.6 28.9 19.7 28.9C20.3 28.9 20.9 28.5 21.1 27.9L23.3 22.4L25.8 21.5C26.5 21.2 26.9 20.4 26.7 19.7C26.5 19 25.7 18.6 25 18.8L23.1 19.5L22.2 16.5C23.2 16.1 24.3 16.1 25.3 16.5L27.5 17.4C28.2 17.7 29 17.3 29.3 16.6C29.6 15.9 29.2 15.1 28.5 14.8L25.5 12.8Z" fill="#10b981"/>
+            <path d="M14.5 25.5L12 28.5C11.5 29.1 11.6 30 12.2 30.5C12.8 31 13.7 30.9 14.2 30.3L16.8 27.2L14.5 25.5Z" fill="#10b981"/>
+            <!-- Football -->
+            <circle cx="28.5" cy="27.5" r="3.5" fill="#ffffff" stroke="#10b981" stroke-width="1.2"/>
+            <path d="M28.5 25.5L29.8 26.5L29.3 28L27.7 28L27.2 26.5Z" fill="#10b981"/>
+          </svg>
+        </div>
+        <span class="brand-name">Assiste</span>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="nav-links">
+        <a href="#events" class="nav-link">Events</a>
+        <a href="#teams" class="nav-link">Teams</a>
+        <a href="#rankings" class="nav-link">Rankings</a>
+        <a href="#india-fixtures" class="nav-link">India Fixtures</a>
+        <a href="#community" class="nav-link">Community</a>
+        <a href="#organizers" class="nav-link">For Organizers</a>
+      </nav>
+
+      <!-- Right Action Items -->
+      <div class="nav-actions">
+        <!-- Search Trigger -->
+        <button id="search-btn" class="icon-btn" title="Search teams, players or tournaments" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+
+        <!-- Dark/Light Theme Toggle -->
+        <button id="theme-toggle" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">
+          <i class="fa-regular fa-moon" id="theme-icon"></i>
+        </button>
+
+        <!-- User Authentication State Container -->
+        <div id="auth-actions-wrapper">
+          <!-- Unauthenticated state (default) -->
+          <button id="nav-login-btn" class="btn btn-primary" onclick="openAuthModal('login')">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Log In / Join</span>
+          </button>
+
+          <!-- Authenticated state (injected by JS) -->
+          <div id="user-profile-menu" class="user-menu hidden">
+            <button id="user-dropdown-btn" class="user-pill-btn">
+              <img id="nav-user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Profile" class="avatar-sm">
+              <span id="nav-user-name" class="user-name-label">Sunil K.</span>
+              <i class="fa-solid fa-chevron-down chevron-icon"></i>
+            </button>
+            <div id="user-dropdown-content" class="dropdown-menu">
+              <div class="dropdown-header">
+                <span id="dropdown-role-badge" class="badge-role">Player</span>
+                <span id="dropdown-user-email" class="dropdown-email">user@assiste.in</span>
+              </div>
+              <hr class="dropdown-divider">
+              <a href="javascript:void(0)" onclick="openProfileModal()" class="dropdown-item">
+                <i class="fa-solid fa-id-card"></i> My Player Profile
+              </a>
+              <a href="javascript:void(0)" onclick="openTeamModal()" class="dropdown-item">
+                <i class="fa-solid fa-shield-halved"></i> My Team / Create Team
+              </a>
+              <a href="javascript:void(0)" onclick="openTournamentRegisterModal()" class="dropdown-item">
+                <i class="fa-solid fa-trophy"></i> Register for Tournaments
+              </a>
+              <hr class="dropdown-divider">
+              <a href="javascript:void(0)" onclick="logoutUser()" class="dropdown-item text-danger">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Menu Hamburger -->
+        <button id="mobile-menu-btn" class="icon-btn mobile-only" aria-label="Open mobile menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-nav-drawer" class="mobile-drawer">
+      <div class="mobile-drawer-header">
+        <div class="brand-logo">
+          <span class="brand-name">Assiste</span>
+        </div>
+        <button id="close-mobile-menu" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <nav class="mobile-nav-links">
+        <a href="#events" class="mobile-link" onclick="closeMobileMenu()">Events</a>
+        <a href="#teams" class="mobile-link" onclick="closeMobileMenu()">Teams</a>
+        <a href="#rankings" class="mobile-link" onclick="closeMobileMenu()">Rankings</a>
+        <a href="#india-fixtures" class="mobile-link" onclick="closeMobileMenu()">India Fixtures</a>
+        <a href="#community" class="mobile-link" onclick="closeMobileMenu()">Community</a>
+        <a href="#organizers" class="mobile-link" onclick="closeMobileMenu()">For Organizers</a>
+      </nav>
+      <div class="mobile-drawer-auth" id="mobile-auth-section">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- HERO SECTION (Identical structure to screenshot with India & Assiste branding) -->
+    <section class="hero-section">
+      <!-- Dark moody stadium background overlay -->
+      <div class="hero-backdrop"></div>
+      
+      <div class="hero-content">
+        <!-- Grassroots Badge Pill -->
+        <div class="pill-badge animate-fade-in">
+          <span class="pulse-dot"></span>
+          <span>Assiste, India's grassroots football platform</span>
+        </div>
+
+        <!-- Main Headline -->
+        <h1 class="hero-title animate-fade-in-up">
+          Let’s Grow<br>
+          <span class="highlight-green">India</span> Football.
+        </h1>
+
+        <!-- Subtitle Description -->
+        <p class="hero-subtitle animate-fade-in-up delay-1">
+          <strong>Assiste</strong> is India's all-in-one grassroots football platform. Organisers run tournaments and leagues, managers build their teams, players create their profile and track stats, and matches can be streamed live to your YouTube channel with an interactive scoreboard.
+        </p>
+
+        <!-- Hero Action Buttons -->
+        <div class="hero-buttons animate-fade-in-up delay-2">
+          <button class="btn btn-hero-primary" onclick="handleHeroCtaClick()">
+            <i class="fa-solid fa-futbol"></i>
+            <span>Create Profile & Team</span>
+          </button>
+          <button class="btn btn-hero-secondary" onclick="openOrganizerModal()">
+            <i class="fa-solid fa-trophy"></i>
+            <span>Run a Tournament</span>
+          </button>
+        </div>
+
+        <!-- Divider Line -->
+        <div class="hero-divider"></div>
+
+        <!-- Live Statistics Counter Row -->
+        <div class="hero-stats animate-fade-in-up delay-3">
+          <div class="stat-item">
+            <span class="stat-number">1,250+</span>
+            <span class="stat-label">TEAMS ACTIVE</span>
+          </div>
+          <div class="stat-separator"></div>
+          <div class="stat-item">
+            <span class="stat-number">18.5K+</span>
+            <span class="stat-label">PLAYERS</span>
+          </div>
+          <div class="stat-separator"></div>
+          <div class="stat-item">
+            <span class="stat-number">120+</span>
+            <span class="stat-label">TOURNAMENTS</span>
+          </div>
+          <div class="stat-separator"></div>
+          <div class="stat-item">
+            <span class="stat-number">64</span>
+            <span class="stat-label">INDIAN CITIES</span>
+          </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <a href="#quick-hub" class="scroll-indicator">
+          <span>SCROLL</span>
+          <i class="fa-solid fa-chevron-down bounce"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- QUICK HUB / USER ACTIONS BAR -->
+    <section id="quick-hub" class="quick-hub-section">
+      <div class="container">
+        <div class="hub-cards-grid">
+          <!-- Card 1: Player Profile -->
+          <div class="hub-card" onclick="handleProfileCardClick()">
+            <div class="hub-icon-wrapper green-glow">
+              <i class="fa-solid fa-user-ninja"></i>
+            </div>
+            <div class="hub-text">
+              <h3>Create Player Profile</h3>
+              <p>Build your digital football card, log your position, city, and track match goals & assists.</p>
+            </div>
+            <div class="hub-action-arrow">
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+
+          <!-- Card 2: Team Creation -->
+          <div class="hub-card" onclick="handleTeamCardClick()">
+            <div class="hub-icon-wrapper orange-glow">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div class="hub-text">
+              <h3>Build Your Team</h3>
+              <p>Form your club, design your badge, invite squad mates, and register for tournaments across India.</p>
+            </div>
+            <div class="hub-action-arrow">
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+
+          <!-- Card 3: Live India Tournaments -->
+          <div class="hub-card" onclick="document.getElementById('events').scrollIntoView({behavior: 'smooth'})">
+            <div class="hub-icon-wrapper blue-glow">
+              <i class="fa-solid fa-trophy"></i>
+            </div>
+            <div class="hub-text">
+              <h3>Tournaments & Leagues</h3>
+              <p>Discover weekend 5v5, 7v7, and 11-a-side cups in Delhi, Bengaluru, Mumbai, Kolkata, Kerala & more.</p>
+            </div>
+            <div class="hub-action-arrow">
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEAMS DIRECTORY & SHOWCASE -->
+    <section id="teams" class="section-container">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">CLUBS ACROSS BHARAT</span>
+            <h2 class="section-title">Active Grassroots Teams</h2>
+            <p class="section-desc">Join an existing squad or create your own local club to compete in your city.</p>
+          </div>
+          <div class="section-cta-group">
+            <button class="btn btn-outline" onclick="openTeamModal()">
+              <i class="fa-solid fa-plus"></i> Create New Team
+            </button>
+          </div>
+        </div>
+
+        <!-- City filter tabs -->
+        <div class="city-filter-bar">
+          <button class="filter-tab active" data-city="all">All India</button>
+          <button class="filter-tab" data-city="Bengaluru">Bengaluru</button>
+          <button class="filter-tab" data-city="Mumbai">Mumbai</button>
+          <button class="filter-tab" data-city="Delhi">Delhi NCR</button>
+          <button class="filter-tab" data-city="Kolkata">Kolkata</button>
+          <button class="filter-tab" data-city="Kerala">Kerala</button>
+          <button class="filter-tab" data-city="Goa">Goa</button>
+        </div>
+
+        <!-- Teams Grid -->
+        <div id="teams-grid" class="teams-grid">
+          <!-- Dynamically populated by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TOURNAMENTS & EVENTS SECTION -->
+    <section id="events" class="section-container alt-bg">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">COMPETITIVE LEAGUES</span>
+            <h2 class="section-title">Tournaments in India</h2>
+            <p class="section-desc">Register your team, view tournament brackets, and compete for prize pools.</p>
+          </div>
+          <div class="section-cta-group">
+            <button class="btn btn-primary" onclick="openOrganizerModal()">
+              <i class="fa-solid fa-bullhorn"></i> Host a Tournament
+            </button>
+          </div>
+        </div>
+
+        <div id="tournaments-grid" class="tournaments-grid">
+          <!-- Dynamically populated by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- INDIA FIXTURES & LIVE MATCHES -->
+    <section id="india-fixtures" class="section-container">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">LIVE SCOREBOARDS</span>
+            <h2 class="section-title">India Match Fixtures</h2>
+            <p class="section-desc">Real-time match scores and upcoming grassroots clashes across Indian pitches.</p>
+          </div>
+          <span class="live-pill"><span class="pulse-dot"></span> LIVE COVERAGE</span>
+        </div>
+
+        <div class="fixtures-table-card">
+          <div id="fixtures-list" class="fixtures-list">
+            <!-- Dynamically populated by app.js -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RANKINGS & TOP PLAYERS -->
+    <section id="rankings" class="section-container alt-bg">
+      <div class="container">
+        <div class="rankings-split-grid">
+          <!-- Top Teams Column -->
+          <div class="ranking-column">
+            <div class="ranking-header">
+              <h3><i class="fa-solid fa-shield-heart highlight-green"></i> Top Grassroots Clubs</h3>
+              <span class="sub-link">Updated Weekly</span>
+            </div>
+            <div id="leaderboard-teams" class="leaderboard-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Top Players Column -->
+          <div class="ranking-column">
+            <div class="ranking-header">
+              <h3><i class="fa-solid fa-crown highlight-green"></i> Top Scorers & Assists</h3>
+              <span class="sub-link">India Standings</span>
+            </div>
+            <div id="leaderboard-players" class="leaderboard-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOR ORGANIZERS SECTION -->
+    <section id="organizers" class="section-container organizers-banner">
+      <div class="container">
+        <div class="organizers-card">
+          <div class="organizers-info">
+            <span class="section-tag">POWERFUL MANAGEMENT SOFTWARE</span>
+            <h2>Run Your Tournament with Assiste</h2>
+            <p>From automated match scheduling and player registration to live streaming scoreboards and digital certificates — streamline your Indian football events seamlessly on the web.</p>
+            <ul class="feature-bullets">
+              <li><i class="fa-solid fa-circle-check text-green"></i> Live YouTube/Instagram scoreboard overlay generator</li>
+              <li><i class="fa-solid fa-circle-check text-green"></i> Online team roster submissions & UPI fee payments</li>
+              <li><i class="fa-solid fa-circle-check text-green"></i> Automated knockout brackets & league tables</li>
+            </ul>
+            <div class="btn-group">
+              <button class="btn btn-primary" onclick="openOrganizerModal()">Start Organizing for Free</button>
+              <button class="btn btn-outline" onclick="openWhatsAppChat()">Talk to India Support</button>
+            </div>
+          </div>
+          <div class="organizers-preview">
+            <div class="bracket-mockup">
+              <div class="bracket-header">
+                <span>All-India Grassroots Cup • Final Stage</span>
+                <span class="badge-live">LIVE</span>
+              </div>
+              <div class="match-fixture-item">
+                <div class="team-line"><span class="team-name">Bengaluru Strikers</span><span class="score-badge">3</span></div>
+                <div class="team-line"><span class="team-name">Mumbai City Rovers</span><span class="score-badge">2</span></div>
+              </div>
+              <div class="match-fixture-item">
+                <div class="team-line"><span class="team-name">Kolkata Gunners</span><span class="score-badge">1</span></div>
+                <div class="team-line"><span class="team-name">Kerala Warriors</span><span class="score-badge">0</span></div>
+              </div>
+              <div class="scoreboard-status">
+                <i class="fa-solid fa-broadcast-tower"></i> Live Scoreboard syncing to stream...
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMUNITY / CALL TO ACTION -->
+    <section id="community" class="section-container">
+      <div class="container text-center">
+        <div class="cta-box">
+          <h2>Ready to Take Indian Grassroots Football to the Next Level?</h2>
+          <p>Create your player profile today, build your club roster, and challenge top teams across India.</p>
+          <div class="cta-buttons">
+            <button class="btn btn-hero-primary" onclick="openAuthModal('signup')">
+              <i class="fa-solid fa-bolt"></i> Join Assiste India Now
+            </button>
+            <button class="btn btn-hero-secondary" onclick="openTeamModal()">
+              <i class="fa-solid fa-users"></i> Create Your Team
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-col brand-col">
+        <div class="brand-logo">
+          <span class="brand-name">Assiste</span>
+        </div>
+        <p class="footer-desc">
+          Building India’s modern digital infrastructure for grassroots football. Made for players, coaches, managers, and tournament directors across the nation.
+        </p>
+        <div class="social-links">
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#events">Tournaments & Cups</a></li>
+          <li><a href="#teams">Registered Clubs</a></li>
+          <li><a href="#rankings">Player Leaderboards</a></li>
+          <li><a href="#india-fixtures">India Fixtures</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Grassroots Hubs</h4>
+        <ul>
+          <li><a href="#" onclick="filterByCity('Bengaluru'); return false;">Bengaluru</a></li>
+          <li><a href="#" onclick="filterByCity('Mumbai'); return false;">Mumbai</a></li>
+          <li><a href="#" onclick="filterByCity('Delhi'); return false;">Delhi NCR</a></li>
+          <li><a href="#" onclick="filterByCity('Kolkata'); return false;">Kolkata</a></li>
+          <li><a href="#" onclick="filterByCity('Kerala'); return false;">Kerala</a></li>
+          <li><a href="#" onclick="filterByCity('Goa'); return false;">Goa</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="javascript:void(0)" onclick="openOrganizerModal()">For Organizers</a></li>
+          <li><a href="javascript:void(0)" onclick="openTeamModal()">Register Team</a></li>
+          <li><a href="javascript:void(0)" onclick="openProfileModal()">Player Card Builder</a></li>
+          <li><a href="javascript:void(0)" onclick="openContactModal()">Contact Support</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <p>© 2026 Assiste Football India. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <span>•</span>
+          <a href="#">Terms of Service</a>
+          <span>•</span>
+          <a href="#">Fair Play Guidelines</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FLOATING QUICK BUTTONS (As in the original Jazba reference image) -->
+  <div class="floating-actions">
+    <!-- WhatsApp Community / Support Button -->
+    <button class="fab-btn fab-whatsapp" onclick="openWhatsAppChat()" title="Chat on WhatsApp" aria-label="WhatsApp">
+      <i class="fa-brands fa-whatsapp"></i>
+    </button>
+    <!-- Contact / Email Support Button -->
+    <button class="fab-btn fab-email" onclick="openContactModal()" title="Contact Assiste Team" aria-label="Email Support">
+      <i class="fa-solid fa-envelope"></i>
+    </button>
+  </div>
+
+  <!-- ==================== MODALS & POPUPS ==================== -->
+
+  <!-- 1. AUTHENTICATION MODAL (LOGIN / REGISTER) -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal-card auth-modal-card">
+      <button class="modal-close-btn" onclick="closeModal('auth-modal')"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div class="auth-tabs">
+        <button id="auth-tab-login" class="auth-tab-btn active" onclick="switchAuthTab('login')">Log In</button>
+        <button id="auth-tab-signup" class="auth-tab-btn" onclick="switchAuthTab('signup')">Create Account</button>
+      </div>
+
+      <!-- Quick Demo Credentials Banner -->
+      <div class="demo-login-box">
+        <p><i class="fa-solid fa-bolt text-green"></i> <strong>Quick Test:</strong> Click below to log in instantly as a test user!</p>
+        <div class="demo-btn-group">
+          <button type="button" class="btn btn-sm btn-ghost" onclick="quickDemoLogin('player')">Demo Player (Sunil)</button>
+          <button type="button" class="btn btn-sm btn-ghost" onclick="quickDemoLogin('manager')">Demo Captain / Manager</button>
+        </div>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="login-form" class="auth-form" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label for="login-email">Email Address</label>
+          <div class="input-icon-wrapper">
+            <i class="fa-regular fa-envelope"></i>
+            <input type="email" id="login-email" required placeholder="player@assiste.in">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <div class="input-icon-wrapper">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="login-password" required placeholder="••••••••">
+          </div>
+        </div>
+
+        <div class="form-row-between">
+          <label class="checkbox-label">
+            <input type="checkbox" id="remember-me" checked>
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-link" onclick="showToast('Password reset link sent to your email!'); return false;">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Log In to Assiste
+        </button>
+      </form>
+
+      <!-- SIGN UP FORM -->
+      <form id="signup-form" class="auth-form hidden" onsubmit="handleSignupSubmit(event)">
+        <div class="form-group">
+          <label for="signup-name">Full Name</label>
+          <div class="input-icon-wrapper">
+            <i class="fa-regular fa-user"></i>
+            <input type="text" id="signup-name" required placeholder="e.g. Sunil Chhetri">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-email">Email Address</label>
+          <div class="input-icon-wrapper">
+            <i class="fa-regular fa-envelope"></i>
+            <input type="email" id="signup-email" required placeholder="sunil@example.com">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-role">Your Football Role</label>
+          <div class="input-icon-wrapper">
+            <i class="fa-solid fa-user-tag"></i>
+            <select id="signup-role" required>
+              <option value="Player">Player (Forward / Midfielder / Defender / GK)</option>
+              <option value="Team Manager">Team Manager / Club Captain</option>
+              <option value="Tournament Host">Tournament Host / Organizer</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-city">Your City in India</label>
+          <div class="input-icon-wrapper">
+            <i class="fa-solid fa-location-dot"></i>
+            <select id="signup-city" required>
+              <option value="Bengaluru">Bengaluru</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Delhi NCR">Delhi NCR</option>
+              <option value="Kolkata">Kolkata</option>
+              <option value="Kochi / Kerala">Kochi / Kerala</option>
+              <option value="Goa">Goa</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Chennai">Chennai</option>
+              <option value="Pune">Pune</option>
+              <option value="Guwahati">Guwahati</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <div class="input-icon-wrapper">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="signup-password" required minlength="6" placeholder="Create a secure password">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fa-solid fa-user-check"></i> Create Assiste Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. PLAYER PROFILE MODAL / DASHBOARD -->
+  <div id="profile-modal" class="modal-overlay">
+    <div class="modal-card profile-modal-card">
+      <button class="modal-close-btn" onclick="closeModal('profile-modal')"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div class="modal-header-banner">
+        <h2><i class="fa-solid fa-id-card highlight-green"></i> Player Profile & Card Builder</h2>
+        <p>Edit your personal stats, position, team, and download your official Assiste FIFA-style digital player card.</p>
+      </div>
+
+      <div class="profile-layout-grid">
+        <!-- Left: Digital FIFA Card Preview -->
+        <div class="fifa-card-preview-container">
+          <div id="digital-player-card" class="fifa-card">
+            <div class="fifa-card-badge">ASSISTE INDIA</div>
+            <div class="fifa-card-top">
+              <div class="fifa-rating-box">
+                <span id="fifa-overall-rating" class="fifa-overall">20</span>
+                <span id="fifa-pos-badge" class="fifa-pos">ST</span>
+                <span class="fifa-flag">🇮🇳</span>
+              </div>
+              <div class="fifa-photo-box">
+                <img id="fifa-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" alt="Player Avatar">
+              </div>
+            </div>
+            <div class="fifa-card-name" id="fifa-card-name">SUNIL K.</div>
+            <div class="fifa-club-name" id="fifa-club-name">Bengaluru Strikers FC</div>
+            <hr class="fifa-divider">
+            <div class="fifa-stats-grid">
+              <div class="stat-col">
+                <div class="stat-line"><span>60 kg</span> W </div>
+                <div class="stat-line"><span>24</span> GP </div>
+                <div class="stat-line"><span>5.7 ft</span> Hgt </div>
+              </div>
+              <div class="stat-col">
+                <div class="stat-line"><span>86</span> DRI</div>
+                <div class="stat-line"><span>30</span> Pts</div>
+                <div class="stat-line"><span>81</span> PHY</div>
+              </div>
+            </div>
+            <div class="fifa-card-footer">
+              <span id="fifa-card-city">Bengaluru, IN</span>
+              <span id="fifa-card-number">#10</span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline btn-block mt-3" onclick="sharePlayerCard()">
+            <i class="fa-solid fa-share-nodes"></i> Share Player Card
+          </button>
+        </div>
+
+        <!-- Right: Profile Edit Form -->
+        <div class="profile-edit-form-container">
+          <form id="profile-edit-form" onsubmit="handleProfileUpdate(event)">
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="profile-name">Player Full Name</label>
+                <input type="text" id="profile-name" required value="Sunil Kumar">
+              </div>
+              <div class="form-group width-small">
+                <label for="profile-jersey">Jersey #</label>
+                <input type="number" id="profile-jersey" min="1" max="99" value="10">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="profile-position">Primary Position</label>
+                <select id="profile-position" onchange="updateFifaCardPreview()">
+                  <option value="ST">Striker (ST)</option>
+                  <option value="LW">Left Winger (LW)</option>
+                  <option value="RW">Right Winger (RW)</option>
+                  <option value="CAM">Attacking Midfielder (CAM)</option>
+                  <option value="CM" selected>Central Midfielder (CM)</option>
+                  <option value="CDM">Defensive Midfielder (CDM)</option>
+                  <option value="CB">Center Back (CB)</option>
+                  <option value="LB">Left Back (LB)</option>
+                  <option value="RB">Right Back (RB)</option>
+                  <option value="GK">Goalkeeper (GK)</option>
+                </select>
+              </div>
+
+              <div class="form-group flex-1">
+                <label for="profile-foot">Dominant Foot</label>
+                <select id="profile-foot">
+                  <option value="Right">Right Foot</option>
+                  <option value="Left">Left Foot</option>
+                  <option value="Both">Both Feet (Ambidextrous)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="profile-city">City / State</label>
+                <input type="text" id="profile-city" value="Bengaluru, Karnataka">
+              </div>
+
+              <div class="form-group flex-1">
+                <label for="profile-team">Current Club / Team</label>
+                <input type="text" id="profile-team" value="Bengaluru Strikers FC">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="profile-bio">Player Bio / Play Style</label>
+              <textarea id="profile-bio" rows="2" placeholder="Box-to-box midfielder with sharp passing vision and set-piece specialist.">Playmaker with strong vision, quick passing in tight spaces, and accurate free-kicks.</textarea>
+            </div>
+
+            <!-- Career Statistics Counters -->
+            <div class="profile-stats-counters">
+              <div class="stat-counter-box">
+                <label>Matches</label>
+                <input type="number" id="stat-matches" value="28" min="0">
+              </div>
+              <div class="stat-counter-box">
+                <label>Goals</label>
+                <input type="number" id="stat-goals" value="19" min="0">
+              </div>
+              <div class="stat-counter-box">
+                <label>Assists</label>
+                <input type="number" id="stat-assists" value="14" min="0">
+              </div>
+              <div class="stat-counter-box">
+                <label>MVP Awards</label>
+                <input type="number" id="stat-mvp" value="7" min="0">
+              </div>
+            </div>
+
+            <div class="form-actions mt-3">
+              <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-floppy-disk"></i> Save Profile Changes
+              </button>
+              <button type="button" class="btn btn-outline" onclick="closeModal('profile-modal')">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. CREATE / MANAGE TEAM MODAL -->
+  <div id="team-modal" class="modal-overlay">
+    <div class="modal-card team-modal-card">
+      <button class="modal-close-btn" onclick="closeModal('team-modal')"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="modal-header-banner">
+        <h2><i class="fa-solid fa-shield-halved highlight-green"></i> Build & Manage Your Team</h2>
+        <p>Register your local squad, recruit teammates, manage squad numbers, and sign up for Indian tournaments.</p>
+      </div>
+
+      <div class="team-modal-tabs">
+        <button id="team-tab-create" class="auth-tab-btn active" onclick="switchTeamTab('create')">
+          <i class="fa-solid fa-plus-circle"></i> Create New Team
+        </button>
+        <button id="team-tab-manage" class="auth-tab-btn" onclick="switchTeamTab('manage')">
+          <i class="fa-solid fa-users-gear"></i> My Squad Roster
+        </button>
+      </div>
+
+      <!-- CREATE TEAM FORM -->
+      <div id="create-team-panel">
+        <form id="create-team-form" onsubmit="handleCreateTeamSubmit(event)">
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label for="team-name">Team / Club Name</label>
+              <input type="text" id="team-name" required placeholder="e.g. Mumbai Super Rovers FC">
+            </div>
+            <div class="form-group flex-1">
+              <label for="team-code">Short Code</label>
+              <input type="text" id="team-code" required maxlength="5" placeholder="e.g. MSRFC">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="team-city">City / Region in India</label>
+              <select id="team-city" required>
+                <option value="Bengaluru">Bengaluru, Karnataka</option>
+                <option value="Mumbai">Mumbai, Maharashtra</option>
+                <option value="Delhi">Delhi NCR</option>
+                <option value="Kolkata">Kolkata, West Bengal</option>
+                <option value="Kerala">Kochi / Malappuram, Kerala</option>
+                <option value="Goa">Panaji / Margao, Goa</option>
+                <option value="Hyderabad">Hyderabad, Telangana</option>
+                <option value="Chennai">Chennai, Tamil Nadu</option>
+                <option value="Guwahati">Guwahati, Assam</option>
+                <option value="Pune">Pune, Maharashtra</option>
+              </select>
+            </div>
+            <div class="form-group flex-1">
+              <label for="team-ground">Home Turf / Ground</label>
+              <input type="text" id="team-ground" placeholder="e.g. Cooperage Football Ground">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label>Team Primary Color</label>
+              <div class="color-picker-palette">
+                <label class="color-radio"><input type="radio" name="team-color" value="#10b981" checked><span style="background: #10b981"></span></label>
+                <label class="color-radio"><input type="radio" name="team-color" value="#3b82f6"><span style="background: #3b82f6"></span></label>
+                <label class="color-radio"><input type="radio" name="team-color" value="#f97316"><span style="background: #f97316"></span></label>
+                <label class="color-radio"><input type="radio" name="team-color" value="#ef4444"><span style="background: #ef4444"></span></label>
+                <label class="color-radio"><input type="radio" name="team-color" value="#a855f7"><span style="background: #a855f7"></span></label>
+                <label class="color-radio"><input type="radio" name="team-color" value="#eab308"><span style="background: #eab308"></span></label>
+              </div>
+            </div>
+            <div class="form-group flex-1">
+              <label for="team-formation">Preferred Formation</label>
+              <select id="team-formation">
+                <option value="4-3-3">4-3-3 (Attacking)</option>
+                <option value="4-2-3-1">4-2-3-1 (Balanced)</option>
+                <option value="3-5-2">3-5-2 (Wing Play)</option>
+                <option value="7v7">7-a-side Turf Setup</option>
+                <option value="5v5">5-a-side Futsal Setup</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="team-motto">Club Motto / Bio</label>
+            <input type="text" id="team-motto" placeholder="e.g. Passion, Grit, and Glory on Indian Turfs.">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">
+            <i class="fa-solid fa-flag"></i> Register Team on Assiste
+          </button>
+        </form>
+      </div>
+
+      <!-- MANAGE SQUAD PANEL -->
+      <div id="manage-squad-panel" class="hidden">
+        <div class="squad-management-header">
+          <div>
+            <h3 id="current-managed-team-name">Bengaluru Strikers FC</h3>
+            <p id="current-managed-team-city">Bengaluru, Karnataka • Captain: Sunil Kumar</p>
+          </div>
+          <button class="btn btn-sm btn-primary" onclick="showAddPlayerPrompt()">
+            <i class="fa-solid fa-user-plus"></i> Add Player to Squad
+          </button>
+        </div>
+
+        <div class="squad-table-container">
+          <table class="squad-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Player Name</th>
+                <th>Position</th>
+                <th>Dominant Foot</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="squad-roster-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. VIEW TEAM DETAILS MODAL -->
+  <div id="team-details-modal" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeModal('team-details-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <div id="team-details-content">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. TOURNAMENT REGISTRATION MODAL -->
+  <div id="tournament-modal" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeModal('tournament-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-header-banner">
+        <h2><i class="fa-solid fa-trophy highlight-green"></i> Register Team for Tournament</h2>
+        <p id="tourney-register-title">Select your club to submit registration for the event.</p>
+      </div>
+      <form id="tournament-reg-form" onsubmit="handleTournamentRegistrationSubmit(event)">
+        <input type="hidden" id="tourney-reg-id">
+        <div class="form-group">
+          <label for="tourney-select-team">Select Your Team</label>
+          <select id="tourney-select-team" required>
+            <!-- Injected by JS -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="tourney-manager-phone">Manager Contact (WhatsApp / Phone)</label>
+          <input type="tel" id="tourney-manager-phone" required placeholder="+91 98765 43210">
+        </div>
+        <div class="form-group">
+          <label for="tourney-entry-note">Special Notes / Squad Requests</label>
+          <textarea id="tourney-entry-note" rows="2" placeholder="e.g. Requesting afternoon group stage slots."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fa-solid fa-check-circle"></i> Confirm Tournament Registration
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. HOST / RUN A TOURNAMENT MODAL -->
+  <div id="organizer-modal" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeModal('organizer-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-header-banner">
+        <h2><i class="fa-solid fa-bullhorn highlight-green"></i> Host a Tournament in India</h2>
+        <p>Get full digital support from Assiste: online brackets, YouTube live scoreboard overlay, and team manager communication.</p>
+      </div>
+      <form id="organizer-form" onsubmit="handleOrganizerSubmit(event)">
+        <div class="form-group">
+          <label for="org-tourney-name">Tournament / League Name</label>
+          <input type="text" id="org-tourney-name" required placeholder="e.g. All India Monsoon Super Cup 2026">
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="org-city">Host City</label>
+            <input type="text" id="org-city" required placeholder="e.g. Mumbai / Bengaluru">
+          </div>
+          <div class="form-group flex-1">
+            <label for="org-format">Format</label>
+            <select id="org-format">
+              <option value="7v7">7-a-side Turf</option>
+              <option value="11v11">11-a-side Full Pitch</option>
+              <option value="5v5">5-a-side Futsal</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="org-teams-count">Expected Teams</label>
+            <input type="number" id="org-teams-count" value="16" min="4" max="64">
+          </div>
+          <div class="form-group flex-1">
+            <label for="org-dates">Expected Date</label>
+            <input type="date" id="org-dates" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="org-contact">Organizer Contact Email / Phone</label>
+          <input type="text" id="org-contact" required placeholder="organizer@tournament.in">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fa-solid fa-paper-plane"></i> Submit Tournament Listing
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7. SEARCH OVERLAY MODAL -->
+  <div id="search-modal" class="modal-overlay">
+    <div class="modal-card search-modal-card">
+      <button class="modal-close-btn" onclick="closeModal('search-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="search-input-header">
+        <i class="fa-solid fa-magnifying-glass search-icon-large"></i>
+        <input type="text" id="global-search-input" placeholder="Search Indian teams, players, cities, tournaments..." oninput="handleGlobalSearch(this.value)">
+      </div>
+      <div id="search-results-box" class="search-results-container">
+        <div class="search-placeholder-text">Type at least 2 characters to search across India football...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. CONTACT / SUPPORT MODAL -->
+  <div id="contact-modal" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeModal('contact-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-header-banner">
+        <h2><i class="fa-solid fa-envelope highlight-green"></i> Contact Assiste Support</h2>
+        <p>Need assistance with your team registration, player profile, or event listing?</p>
+      </div>
+      <form onsubmit="handleContactSubmit(event)">
+        <div class="form-group">
+          <label for="contact-name">Your Name</label>
+          <input type="text" id="contact-name" required placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+          <label for="contact-email">Email or Phone</label>
+          <input type="text" id="contact-email" required placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label for="contact-msg">Message / Query</label>
+          <textarea id="contact-msg" rows="3" required placeholder="Tell us how we can help your team or tournament..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
